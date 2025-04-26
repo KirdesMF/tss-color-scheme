@@ -2,6 +2,7 @@
   "name": "tsr-color-scheme",
   "module": "index.ts",
   "type": "module",
+  "packageManager": "bun@1.2.10",
   "private": true,
   "scripts": {
     "dev": "vinxi dev",
