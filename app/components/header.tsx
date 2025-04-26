@@ -1,8 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { setColorSchemeFn } from "~/lib/color-scheme";
+import { colorSchemeQuery, setColorSchemeFn } from "~/lib/color-scheme";
 
 export function Header() {
+  const { data: colorScheme } = useQuery(colorSchemeQuery);
   const { mutate } = useMutation({ mutationFn: useServerFn(setColorSchemeFn) });
   const queryClient = useQueryClient();
 
@@ -22,14 +23,26 @@ export function Header() {
       <p className="text-red-600 dark:text-white">Header</p>
 
       <div className="flex gap-2">
-        <button type="button" onClick={() => onColorSchemeChange("dark")}>
-          Dark
+        <button
+          type="button"
+          onClick={() => onColorSchemeChange("dark")}
+          className="border border-gray-300 dark:border-white rounded-md px-2 py-1 min-w-24"
+        >
+          {colorScheme === "dark" ? "Dark 🟢" : "Dark"}
         </button>
-        <button type="button" onClick={() => onColorSchemeChange("light")}>
-          Light
+        <button
+          type="button"
+          onClick={() => onColorSchemeChange("light")}
+          className="border border-gray-300 dark:border-white rounded-md px-2 py-1 min-w-24"
+        >
+          {colorScheme === "light" ? "Light 🟢" : "Light"}
         </button>
-        <button type="button" onClick={() => onColorSchemeChange("system")}>
-          System
+        <button
+          type="button"
+          onClick={() => onColorSchemeChange("system")}
+          className="border border-gray-300 dark:border-white rounded-md px-2 py-1 min-w-24"
+        >
+          {colorScheme === "system" ? "System 🟢" : "System"}
         </button>
       </div>
     </header>
