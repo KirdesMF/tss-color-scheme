@@ -1,21 +1,29 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { colorSchemeQuery, setColorSchemeFn } from "~/lib/color-scheme";
 
 export function Header() {
-  const { data: colorScheme } = useQuery(colorSchemeQuery);
-  const { mutate } = useMutation({ mutationFn: useServerFn(setColorSchemeFn) });
   const queryClient = useQueryClient();
+  const { data: colorScheme } = useQuery(colorSchemeQuery);
+
+  const { mutate } = useMutation({
+    mutationFn: setColorSchemeFn,
+    onMutate: async (colorScheme) => {
+      await queryClient.cancelQueries({ queryKey: ["color-scheme"] });
+      const previousColorScheme = queryClient.getQueryData<string>(["color-scheme"]);
+      queryClient.setQueryData(["color-scheme"], colorScheme);
+      return { previousColorScheme };
+    },
+    onError: (error, variables, context) => {
+      alert("there was an error setting the color scheme");
+      queryClient.setQueryData(["color-scheme"], context?.previousColorScheme);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["color-scheme"] });
+    },
+  });
 
   function onColorSchemeChange(colorScheme: "dark" | "light" | "system") {
-    mutate(
-      { data: colorScheme },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["color-scheme"] });
-        },
-      },
-    );
+    mutate({ data: colorScheme });
   }
 
   return (
