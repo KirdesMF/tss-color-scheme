@@ -5,6 +5,7 @@ import { useSuspenseQuery, type QueryClient } from "@tanstack/react-query";
 import { colorSchemeQuery } from "../lib/color-scheme";
 import { Header } from "../components/header";
 import appCSS from "~/styles/app.css?url";
+import { ThemeProvider } from "../providers/theme-provider";
 
 export type RootRouterContext = {
   queryClient: QueryClient;
@@ -40,16 +41,18 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const { data: colorScheme } = useSuspenseQuery(colorSchemeQuery);
+  const { data: initialTheme } = useSuspenseQuery(colorSchemeQuery);
 
   return (
-    <html lang="en" data-theme={colorScheme}>
+    <html lang="en" data-theme={initialTheme}>
       <head>
         <HeadContent />
       </head>
       <body className="bg-white text-black dark:bg-black dark:text-white">
-        <Header />
-        {children}
+        <ThemeProvider initialTheme={initialTheme}>
+          <Header />
+          {children}
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>
