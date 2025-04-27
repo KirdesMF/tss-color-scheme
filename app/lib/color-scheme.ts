@@ -6,11 +6,6 @@ import { queryOptions } from "@tanstack/react-query";
 const SCHEME = ["dark", "light", "system"] as const;
 const ColorSchemeSchema = v.picklist(SCHEME);
 
-export function getColorScheme() {
-  if (typeof document === "undefined") return "system";
-  return document.documentElement.dataset.theme;
-}
-
 export const setColorSchemeFn = createServerFn({ method: "POST" })
   .validator(ColorSchemeSchema)
   .handler(({ data }) => {
