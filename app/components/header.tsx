@@ -7,16 +7,6 @@ export function Header() {
 
   const { mutate } = useMutation({
     mutationFn: setColorSchemeFn,
-    onMutate: async (colorScheme) => {
-      await queryClient.cancelQueries({ queryKey: ["color-scheme"] });
-      const previousColorScheme = queryClient.getQueryData<string>(["color-scheme"]);
-      queryClient.setQueryData(["color-scheme"], colorScheme);
-      return { previousColorScheme };
-    },
-    onError: (error, variables, context) => {
-      alert("there was an error setting the color scheme");
-      queryClient.setQueryData(["color-scheme"], context?.previousColorScheme);
-    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["color-scheme"] });
     },
