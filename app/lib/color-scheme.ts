@@ -19,9 +19,9 @@ export const setColorSchemeFn = createServerFn({ method: "POST" })
 
 export const getColorSchemeFn = createServerFn({ method: "GET" })
   .validator(() => {
-    const colorScheme = getCookie("color-scheme");
+    const colorScheme = getCookie("color-scheme") ?? "system";
     const scheme = v.parse(ColorSchemeSchema, colorScheme);
-    return scheme ?? "system";
+    return scheme;
   })
   .handler(({ data }) => data);
 
